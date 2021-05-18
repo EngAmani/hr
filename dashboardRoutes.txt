@@ -1,0 +1,76 @@
+Route::get('/dashboard', function () {
+
+    $now = Carbon::now();
+    $now->subMonth(1);
+  
+    $users = User::all();
+
+    foreach($users as $user){
+        if($user->total_late() > 0){
+        $late_users[$user->id]['name'] = $user->name;
+        $late_users[$user->id]['late'] = $user->total_late();
+        $totals[$user->id] = $user->total_late();
+        }
+    }
+
+    array_multisort($totals, SORT_DESC, $late_users);
+
+   // krsort($late_users);
+
+   $max_limit = 10;
+     for($i=0;$i < count($late_users);$i++){
+        if($i < $max_limit){
+       $labels_late[]=$late_users[$i]['name'];
+       $data_late[]=$late_users[$i]['late'];
+        }
+     }
+
+
+    $user_info = DB::table('posts')
+    ->where('absent_type','بدون عذر')
+    ->whereYear('date', $now->year)
+    ->whereMonth('date', $now->month)
+     ->select('user_id', DB::raw('count(*) as total'))
+     ->groupBy('user_id')
+     ->orderByDesc('total')
+     ->get();
+
+     $user_info1 = DB::table('posts')
+     ->where('absent_type','مرضي')
+     ->whereYear('date', $now->year)
+     ->whereMonth('date', $now->month)
+      ->select('user_id', DB::raw('count(*) as total'))
+      ->groupBy('user_id')
+      ->orderByDesc('total')
+      ->get();
+
+      $user_info2 = DB::table('posts')
+     ->where('absent_type','إضطراري')
+     ->whereYear('date', $now->year)
+     ->whereMonth('date', $now->month)
+      ->select('user_id', DB::raw('count(*) as total'))
+      ->groupBy('user_id')
+      ->orderByDesc('total')
+      ->get();
+
+  //dd($);
+  //dd($user_info); // Sort by surname
+
+  $max_limit = 10;
+    $labels = array();
+
+    $data = array();
+    for($i=0;$i < count($user_info); $i++){
+        if($i < $max_limit){
+            $labels[] = User::find($user_info[$i]->user_id)->name;
+            $data[] = $user_info[$i]->total;
+        }
+ 
+    }
+
+  //  dd($labels);
+    $data = implode(',',$data);
+   $data_late = implode(',',$data_late);
+    
+    return view('dashboard/dashboard',compact('data','labels','data_late','labels_late'));
+})->name('dashboard');

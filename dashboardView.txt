@@ -1,0 +1,546 @@
+
+@extends('layouts.app')
+
+@section('title', 'لوحة تحكم')
+@section('content')
+
+<?php  $ser = App\Models\User::select('name')->get(); 
+foreach($ser as $u){
+    $all[] = $u->name;
+}
+$users_a = implode(',',$all);
+?>
+
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<!--<link rel="stylesheet" href="C:\Users\eng_a\Desktop\style.css">-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+   <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet">
+
+<link rel="stylesheet" media="all" href="\resources\css\style" type="text/css" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<body>
+  <style>
+  html, body{
+     margin: 0;
+  }
+
+  
+
+:root {
+    /* Color Theming */
+    --first-bg-color:  #252f3b;
+    --second-bg-color: #1B2533;
+    --first-font-color: white;
+    --second-font-color: #21cd92;
+    --overall-top-margin: 30px;
+    --dashboard-margin: 40px;
+    --nav-side-bar-margin-left: 20px;
+    --border-radius: 10px;
+    --font-size-xs: 16px;
+    --font-size-medium: 28px;
+    --font-size-large: 48px;
+  }
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+
+
+.cards2{
+    display: grid;
+   
+   grid-template-columns: 750px 700px;
+   grid-template-rows: 300px 300px;
+  
+   gap: 20px;
+  
+}
+
+
+
+
+ @media only screen and (max-width: 1200px) {
+    .container{
+        grid-template-columns: 2fr 6fr;
+        
+    }
+} 
+
+/* CSS Styling Admin Dashboard Side Navbar */
+/* .sidebar {
+    height: auto;
+    background-color: var(--second-bg-color);
+    color: var(--first-font-color);
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.logo {
+    height:60px;
+    width: 60px;
+    margin-top: var(--overall-top-margin);
+    margin-bottom: 150px;
+    margin-left: var(--nav-side-bar-margin-left);
+  float: left;
+} */
+
+@media only screen and (max-width: 1200px) {
+    .logo{
+        height: 40px;
+        width: 40px;
+    }
+}
+
+/* img {
+    height: 100%;
+}
+
+.side-nav-header {
+    margin-left:0;
+    font-size: var(--font-size-xs);
+    color: var(--second-font-color);
+}
+
+.side-nav-elements {
+    margin-left: var(--nav-side-bar-margin-left);
+    font-size: var(--font-size-medium);
+}
+
+.material-icons {
+    font-size: var(--font-size-medium);
+    margin-right: 15px;
+}
+
+.material-icons:hover {
+    cursor: pointer;
+} */
+
+.side-nav-element {
+    display: flex;
+    align-items: center;
+  /*  margin-bottom: 40px;*/
+}
+
+.main {
+    height: auto;
+}
+
+/* CSS Styling Admin Dashboard Header */
+.header {
+    background-color: var(--first-bg-color);
+    color: var(--first-font-color);
+    height: 10%;
+    border-top-right-radius: var(--border-radius);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.header-elements {
+    display: inline-flex;
+    padding-top: var(--overall-top-margin);
+    align-items: center;
+    margin-right: 50px;
+}
+
+.header-element{
+  /*  margin-right: 40px;*/
+}
+
+.profile {
+    height: 20px;
+    width: 20px;
+}
+
+.profile-img {
+    height: 50px;
+    border-radius: 100%;
+    border: 1px solid white;
+}
+
+.dashboard {
+    color: var(--first-font-color);
+    height: 95%;
+    background-color: var(--first-bg-color);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.welcome_message {
+    display: block;
+    font-size: var(--font-size-medium);
+    margin-left: var(--dashboard-margin);
+}
+
+.welcome_message_name {
+    color: var(--second-font-color);
+}
+
+.dashboard-header {
+    overflow: auto;
+    margin-left: var(--dashboard-margin);
+    margin-top: -50px;
+    font-size: var(--font-size-large);
+    display: flex;
+    align-items: center;
+}
+
+
+.select-wrapper {
+    width: 180px;
+    margin-left: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper::before {
+    position: absolute;
+    content: "▼";
+    font-size: var(--font-size-xs);
+    right: 20px;
+    color: var(--second-font-color);
+  }
+
+#datepicker {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+
+    width: 100%;
+    height: 40px;
+    padding-left: 20px;
+    border-radius: 20px;
+    background-color: var(--second-bg-color);
+    font-size: var(--font-size-xs);
+    color: var(--first-font-color);
+}
+
+#datepicker option {
+    color: #666;
+    background-color: transparent;
+  }
+
+/* .dashboard-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 var(--dashboard-margin);
+    padding-bottom: 50px;
+    gap: 50px;
+} */
+
+@media only screen and (max-width: 1200px) {
+    .dashboard-cards{
+        grid-template-columns: 1fr;
+    }
+} 
+
+
+.card {
+    width: 50%;
+    
+    border-radius: 10px;
+    box-shadow:  10px 10px 10px #151d28;
+}
+
+.chart-canvas {
+    margin: 20px;
+    min-height: 250px;
+
+    position: relative;
+
+}
+
+.chart-options {
+    position: absolute;
+    right: 30px;
+    top: 14px;
+}
+
+#cashstreamEC {
+    background-color: transparent;
+    color: var(--second-font-color);
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+#cashstreamEC option {
+    color: #666;
+    background-color: transparent;
+  }
+
+  /* header{
+
+    float: right;
+    z-index: 10;
+  } */
+
+  </style>
+<div class=cards2>
+<div class="card" id="card-1" >
+                    <div class="chart-canvas"   >
+          <canvas id="myChart" width="600" height="300"></canvas>
+    <script >
+
+    var new_labels = [];
+
+    @foreach($labels_late as $lb)
+
+    new_labels.push("{{$lb}}");
+
+    @endforeach
+    
+  //  new_labels  = new_labels.replace('&#039;',"");
+
+  console.log(new_labels.join(','));
+
+                      var ctx = document.getElementById('myChart').getContext('2d');
+                      var myChart = new Chart(ctx, {
+                          type: 'bar',
+                          data: {
+                              labels:new_labels,
+                              datasets: [{
+                                  label:'الاكثر تاخيرا',
+                                  data: [{{$data_late}}],
+                                  backgroundColor: [
+                                      'rgba(79, 38, 131, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                  ],
+                                  borderColor: [
+                                      'rgba(79, 38, 131, 1))',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                      'rgba(0, 170, 184, 1)',
+                                  ],
+                                  borderWidth: 1
+                              }]
+                          },
+                          options: {
+                            title:{display:true, text:'الموظفات الأكثر تأخيراً', fontSize:25},
+                            maintainAspectRatio: false,
+                       responsive:true,
+                       scales: {
+                           yAxes: [{
+                               ticks: {
+                                   beginAtZero: true
+                               }
+                           }]
+                       }
+                      }
+                      });
+</script>
+
+                    </div>
+                    </div>
+
+<!--                
+                    <div class="card"  id="card-2" >
+                    <div class="chart-canvas">
+
+                      <canvas id="myChart1" width="300" height="300"></canvas>
+                    <script >
+                 
+
+                                  var ctx1 = document.getElementById('myChart1').getContext('2d');
+                                  var myChart1 = new Chart(ctx1, {
+                                      type: 'doughnut',
+                                      data: {
+                                          labels: [<?php echo $users_a;?>]
+                                          datasets: [{
+                                              label: 'نسبة الإلتزام في الحضور',
+                                              data: [4,5,6,7,8,9],
+                                              backgroundColor: [
+                                                  'rgba(75, 192, 192, 0.2',
+                                                  'rgba(54, 162, 235, 0.2)',
+                                                  'rgba(255, 206, 86, 0.2)',
+                                                  'rgba(75, 192, 192, 0.2)',
+                                                  'rgba(153, 102, 255, 0.2)',
+                                                  'rgba(255, 159, 64, 0.2)'
+                                              ],
+                                              borderColor: [
+                                                  'rgba(75, 192, 192, 1)',
+                                                  'rgba(54, 162, 235, 1)',
+                                                  'rgba(255, 206, 86, 1)',
+                                                  'rgba(75, 192, 192, 1)',
+                                                  'rgba(153, 102, 255, 1)',
+                                                  'rgba(255, 159, 64, 1)'
+                                              ],
+                                              borderWidth: 1
+                                          }]
+                                      },
+                                      options: {
+                                        title:{display:true, text:'نسبة التأخير خلال شهر اكتوبر', fontSize:25},
+                                        maintainAspectRatio: false,
+                                      pieSliceText: 'label-and-value',
+                                   responsive:true,
+                                   scales: {
+                                       yAxes: [{
+                                           ticks: {
+                                               beginAtZero: true
+                                           }
+                                       }]
+                                   }
+                                  }
+                                  });
+                    </script>
+  </div>
+</div> -->
+
+                         
+   
+
+
+                    <div class="card"  id="card-3">
+                    <div class="chart-canvas">
+                      <canvas id="myChart2" width="300" height="300"></canvas>
+                    <script >
+
+  var new_labels_absent=[];
+
+  @foreach($labels as $lb)
+  new_labels_absent.push("{{$lb}}");
+                       
+  @endforeach
+                                  var ctx2 = document.getElementById('myChart2').getContext('2d');
+                                  var myChart2 = new Chart(ctx2, {
+                                      type: 'bar',
+                                      data: {
+                                          labels: new_labels_absent,
+                                          datasets: [{
+
+                                              data: [{{$data}}],
+                                              backgroundColor: [
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                              ],
+                                              borderColor: [
+                                                  'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                                'rgba(79, 38, 131, 1)',
+                                              ],
+                                              borderWidth: 1
+                                          }]
+                                      },
+                                      options: {
+                                        legend: {
+       display: false
+   },
+   tooltips: {
+       callbacks: {
+          label: function(tooltipItem) {
+                 return tooltipItem.yLabel;
+          }
+       }
+   },
+
+                                        title:{display:true, text:'أكثر الموظفات غياب', fontSize:25},
+
+                                        maintainAspectRatio: false,
+                                   responsive:true,
+                                   scales: {
+                                       yAxes: [{
+                                           ticks: {
+                                               beginAtZero: true
+                                           }
+                                       }]
+                                   }
+                                  }
+                                  });
+                    </script>
+                  </div>
+                  </div>
+
+                 
+              <!-- <div class="card"  id="card-4">
+                  <div class="chart-canvas">
+                    <canvas id="myChart3" width="300" height="300"></canvas>
+                  <script >
+
+
+                                var ctx3 = document.getElementById('myChart3').getContext('2d');
+
+                                var myChart3 = new Chart(ctx3, {
+                                    type: 'pie',
+                                    data: {
+                                        labels: ['الحضور','التأخير','الغياب'],
+                                        datasets: [{
+                                            label: 'نسبة الإلتزام في الحضور',
+                                            data: [94,5,1],
+                                            backgroundColor: [
+                                              'rgba(54, 162, 235, 0.2)' ,
+                                                 'rgba(255, 206, 86, 0.2)',
+                                             'rgba(255, 99, 132, 0.2)'   ,
+
+                                            ],
+                                            borderColor: [
+                                               'rgba(54, 162, 235, 1)',
+                                                 'rgba(255, 206, 86, 1)',
+                                                'rgba(255, 99, 132, 1)' ,
+
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                      title:{display:true, text:'الحضور اليوم', fontSize:30},
+                                      maintainAspectRatio: false,
+                                 responsive:true,
+                                 scales: {
+                                     yAxes: [{
+                                         ticks: {
+                                             beginAtZero: true
+                                         }
+                                     }]
+                                 },
+                                }
+                                }
+
+
+
+                              );
+                  </script>
+                  </div>
+              </div> -->
+                            </div>
+
+
+
+
+
+
+  </body>
+
+
+@endsection
